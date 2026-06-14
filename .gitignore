@@ -1,0 +1,18 @@
+# Zig cache and build artifacts
+.zig-cache/
+zig-out/
+
+# Editor and IDE directories
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Environment files (since your project manages secrets, it's good practice not to commit them!)
+.env
+.env.*
+!.env.example
