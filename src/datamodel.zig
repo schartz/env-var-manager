@@ -2,7 +2,7 @@ const std = @import("std");
 
 pub const Secret = struct { name: []const u8, value: []const u8, comment: ?[]const u8 };
 
-const SecretStore = struct {
+pub const SecretStore = struct {
     secrets: std.array_hash_map.String(Secret),
     env: []const u8,
     pub fn init(alloc: std.mem.Allocator, env_name: []const u8) SecretStore {
@@ -42,9 +42,10 @@ const SecretStore = struct {
 pub const Project = struct {
     name: []const u8,
     description: []const u8,
-    store: SecretStore,
+    stores: std.array_hash_map.String(SecretStore),
 
-    pub fn init(allocator: std.mem.Allocator, project_name: []const u8, envname: []const u8, desc: []const u8) Project {
-        return Project{ .name = project_name, .description = desc, .store = SecretStore.init(allocator, envname) };
+    pub fn init(allocator: std.mem.Allocator, project_name: []const u8, desc: []const u8) Project {
+        _ = allocator;
+        return Project{ .name = project_name, .description = desc, .stores = .{} };
     }
 };

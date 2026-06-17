@@ -36,8 +36,11 @@ pub fn main(init: std.process.Init) !void {
         envname = "dev";
     }
 
-    var project = datamodel.Project.init(arena_alloc, project_name, envname, "");
-    try cli_ctx.stdout.print("Secret store for environment \"{s}\" created for project \"{s}\"\n", .{ project.store.env, project.name });
+    var project = datamodel.Project.init(arena_alloc, project_name, "");
+    const new_store = datamodel.SecretStore.init(arena_alloc, envname);
+    try project.stores.put(arena_alloc, envname, new_store);
+    var active_store = project.stores.getPtr(envname);
+    try cli_ctx.stdout.print("Secret store for environment \"{s}\" created for project \"{s}\"\n", .{ envname, project.name });
 
     // populate secrets in loop
     while (true) {
@@ -65,9 +68,9 @@ pub fn main(init: std.process.Init) !void {
 
         // add secret
         const secret = datamodel.Secret{ .name = secret_name, .value = secret_value, .comment = comment_value };
-        try project.store.addSecret(arena_alloc, secret);
+        try active_store.?.addSecret(arena_alloc, secret);
     }
 
     try cli_ctx.stdout.print("Your project secrets are: \n", .{});
-    try project.store.printSecrets(init.io);
+    try active_store.?.printSecrets(init.io);
 }
