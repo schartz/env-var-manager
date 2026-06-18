@@ -1,5 +1,6 @@
 const std = @import("std");
 const envmgr = @import("envmgr");
+const dotenvexp = @import("exporting/dotenv.zig");
 
 // Grab what you need from the hub
 const utils = envmgr.utils;
@@ -76,7 +77,12 @@ pub fn main(init: std.process.Init) !void {
 
     try cli_ctx.stdout.print("Your project secrets are: \n", .{});
     try active_store.?.printSecrets(init.io);
-    _ = try diskops.toJson(arena_alloc, &project, .{ .whitespace = .indent_2 });
+    const json_str = try diskops.toJson(arena_alloc, &project, .{ .whitespace = .indent_2 });
+    try cli_ctx.stdout.print("{s}", .{json_str});
+    const secretStore = project.stores.get(envname);
+    if (secretStore) |str| {
+        try dotenvexp.exportDotEnv(arena_alloc, init.io, "text.env", &str);
+    }
 
     // std.debug.print("{s}\n", .{json_string});
 }
