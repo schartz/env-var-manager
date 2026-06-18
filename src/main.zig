@@ -1,6 +1,7 @@
 const std = @import("std");
 const utils = @import("utils.zig");
 const datamodel = @import("datamodel.zig");
+const diskops = @import("diskops/serialize.zig");
 const Io = std.Io;
 
 const envmgr = @import("envmgr");
@@ -73,4 +74,7 @@ pub fn main(init: std.process.Init) !void {
 
     try cli_ctx.stdout.print("Your project secrets are: \n", .{});
     try active_store.?.printSecrets(init.io);
+    _ = try diskops.toJson(arena_alloc, &project, .{ .whitespace = .indent_2 });
+
+    // std.debug.print("{s}\n", .{json_string});
 }
