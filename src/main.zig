@@ -1,10 +1,12 @@
 const std = @import("std");
-const utils = @import("utils.zig");
-const datamodel = @import("datamodel.zig");
-const diskops = @import("diskops/serialize.zig");
-const Io = std.Io;
-
 const envmgr = @import("envmgr");
+
+// Grab what you need from the hub
+const utils = envmgr.utils;
+const datamodel = envmgr.datamodel;
+const diskops = envmgr.diskops;
+
+const Io = std.Io;
 
 pub fn main(init: std.process.Init) !void {
     // initialize the allocator for the project
